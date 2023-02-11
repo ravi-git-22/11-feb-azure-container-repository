@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "azure_registry_resource_group" {
 }
 
 resource "azurerm_container_registry" "terraform_docker_acr" {
-  name                = "terraformdockeracr"
+  name                = "terraformdockeracrravi"
   resource_group_name = azurerm_resource_group.azure_contianer_rg.name
   location            = azurerm_resource_group.azure_contianer_rg.location
   sku                 = "Basic"
