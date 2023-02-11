@@ -47,7 +47,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            registryId=$(az acr show --name terraformdockeracr --resource-group azure-container-rg --query id --output tsv)
+            registryId=$(az acr show --name terraformdockeracr --resource-group az-ravi-registry-resource-group --query id --output tsv)
             MSYS_NO_PATHCONV=1 az role assignment create --assignee ${{ secrets.ARM_CLIENT_ID }} --scope $registryId --role AcrPush
 
       - name: "Build and push image"
