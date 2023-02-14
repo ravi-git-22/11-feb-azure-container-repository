@@ -47,26 +47,26 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            registryId=$(az acr show --name terraformdockeracrravi --resource-group az-ravi-registry-resource-group --query id --output tsv)
+            registryId=$(az acr show --name dockeracrravi --resource-group az-ravi-registry-resource-group --query id --output tsv)
             MSYS_NO_PATHCONV=1 az role assignment create --assignee ${{ secrets.ARM_CLIENT_ID }} --scope $registryId --role AcrPush
 
-      - name: "Build and push image"
+      - name: "Build and push image" #building image and pushing to docker container
         uses: azure/docker-login@v1
         with:
-          login-server: terraformdockeracrravi.azurecr.io
+          login-server: dockeracrravi.azurecr.io
           username: ${{ secrets.ARM_CLIENT_ID }}
           password: ${{ secrets.ARM_CLIENT_SECRET }}
       - run: |
-          docker build . -t terraformdockeracrravi.azurecr.io/sampleapp:${{ github.sha }}
-          docker push terraformdockeracrravi.azurecr.io/sampleapp:${{ github.sha }}
+          docker build . -t dockeracrravi.azurecr.io/sampleapp:${{ github.sha }}
+          docker push dockeracrravi.azurecr.io/sampleapp:${{ github.sha }}
 
-      - name: "Deploy to Azure Container Instances"
+      - name: "Deploy to Azure Container Instances" #Deploying docker image to ACI
         uses: "azure/aci-deploy@v1"
         with:
           resource-group: az-ravi-registry-resource-group
           dns-name-label: azure-container-rg${{ github.run_number }}
-          image: terraformdockeracrravi.azurecr.io/sampleapp:${{ github.sha }}
-          registry-login-server: terraformdockeracrravi.azurecr.io
+          image: dockeracrravi.azurecr.io/sampleapp:${{ github.sha }}
+          registry-login-server: dockeracrravi.azurecr.io
           registry-username: ${{ secrets.ARM_CLIENT_ID }}
           registry-password: ${{ secrets.ARM_CLIENT_SECRET }}
           name: terraform-docker-container
